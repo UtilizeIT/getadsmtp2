@@ -1,0 +1,22 @@
+{
+  "name": "getadsmtp2",
+  "version": "0.0.1",
+  "description": "Gather SMTP info from Active Directory for use in e-mail routing",
+  "main": "getadsmtp2.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UtilizeIT/getadsmtp2.git"
+  },
+  "author": "Aaron C. de Bruyn",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/UtilizeIT/getadsmtp2/issues"
+  },
+  "homepage": "https://github.com/UtilizeIT/getadsmtp2#readme",
+  "dependencies": {
+    "ldapjs": "^1.0.0"
+  }
+}
