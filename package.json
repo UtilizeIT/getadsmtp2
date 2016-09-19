@@ -1,6 +1,6 @@
 {
   "name": "getadsmtp2",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Gather SMTP info from Active Directory for use in e-mail routing",
   "main": "getadsmtp2.js",
   "scripts": {
@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/UtilizeIT/getadsmtp2#readme",
   "dependencies": {
-    "ldapjs": "^1.0.0"
+    "async": "^2.0.1",
+    "debug": "^2.2.0",
+    "ldapjs": "^1.0.0",
+    "yargs": "^5.0.0"
   }
 }
