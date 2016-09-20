@@ -16,8 +16,10 @@ var argv = require('yargs')
     .describe('users', 'Include addresses from users with mailboxes')
     .describe('rooms', 'Include rooms')
     .describe('haraka-rcpt-to-routes', 'Output in Haraka rcpt_to.routes format, requires specifying the URI for delivery')
+    .describe('postfix-transport-map', 'Output in a format suitable for a Postfix transport map, requires specifying the destination server')
     .describe('mailenabledcontacts', '')
     .requiresArg('haraka-rcpt-to-routes')
+    .requiresArg('postfix-transport-map')
     .argv;
 
 var ldap = require('ldapjs');
@@ -40,6 +42,8 @@ var opts = {
 function write_line(data) {
     if (argv.harakaRcptToRoutes) {
         console.log(data.toLowerCase() + '=' + argv.harakaRcptToRoutes.toLowerCase());
+    } else if (argv.postfixTransportMap) {
+        console.log(data.toLowerCase() + "\t" + argv.postfixTransportMap.toLowerCase());
     } else {
         console.log(data);
     }
