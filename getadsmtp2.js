@@ -1,7 +1,9 @@
 #!/usr/bin/env node
+/* eslint dot-location: ["off"] */
 
 var async = require('async');
-var debug = require('debug')('getadsmtp'), name = 'getadsmtp';
+var debug = require('debug')('getadsmtp');
+var name = 'getadsmtp';
 var argv = require('yargs')
     .usage('Usage: $0 [options]')
     .help('h')
@@ -29,14 +31,13 @@ var argv = require('yargs')
 var ldap = require('ldapjs');
 
 
-
 function ldap_connect(callback) {
     var client = ldap.createClient({
         url: argv.server,
         tlsOptions: { 'rejectUnauthorized': false }
     });
     callback(client);
-};
+}
 
 var opts = {
     attributes: ['dn', 'proxyAddresses'],
@@ -84,67 +85,85 @@ function query_ldap(client, opts, callback) {
 }
 
 if (argv.groups) {
-    ldap_connect(function (client) {
-        client.bind(argv.username, argv.password, function (err) {
-            opts.filter = '(|(&(objectCategory=group)(groupType:1.2.840.113556.1.4.804:=8)(!(groupType:1.2.840.113556.1.4.804:=2147483648))(mailNickname=*))(&(objectCategory=group)(groupType:1.2.840.113556.1.4.803:=2147483656)(mailNickname=*))(&(objectCategory=group)(!(groupType:1.2.840.113556.1.4.804:=8))(mailNickname=*))(&(objectCategory=msExchDynamicDistributionList)(mailNickname=*)))'
-            query_ldap(client, opts, function () {
-                client.unbind();
-            });
-        });
+  ldap_connect(function (client) {
+    client.bind(argv.username, argv.password, function (err) {
+      if (err) {
+        return console.err('Unable to connect: ' + err);
+      }
+      opts.filter = '(|(&(objectCategory=group)(groupType:1.2.840.113556.1.4.804:=8)(!(groupType:1.2.840.113556.1.4.804:=2147483648))(mailNickname=*))(&(objectCategory=group)(groupType:1.2.840.113556.1.4.803:=2147483656)(mailNickname=*))(&(objectCategory=group)(!(groupType:1.2.840.113556.1.4.804:=8))(mailNickname=*))(&(objectCategory=msExchDynamicDistributionList)(mailNickname=*)))';
+      query_ldap(client, opts, function () {
+        client.unbind();
+      });
     });
+  });
 }
 
 if (argv.folders) {
-    ldap_connect(function (client) {
-        client.bind(argv.username, argv.password, function (err) {
-            opts.filter = '(&(objectCategory=publicFolder)(mailNickname=*))'
-            query_ldap(client, opts, function () {
-                client.unbind();
-            });
-        });
+  ldap_connect(function (client) {
+    client.bind(argv.username, argv.password, function (err) {
+      if (err) {
+        return console.error('Unable to bind: ' + err);
+      }
+      opts.filter = '(&(objectCategory=publicFolder)(mailNickname=*))';
+      query_ldap(client, opts, function () {
+        client.unbind();
+      });
     });
+  });
 }
 
 if (argv.contacts) {
-    ldap_connect(function (client) {
-        client.bind(argv.username, argv.password, function (err) {
-            opts.filter = '(&(objectClass=contact)(mailNickname=*))'
-            query_ldap(client, opts, function () {
-                client.unbind();
-            });
-        });
+  ldap_connect(function (client) {
+    client.bind(argv.username, argv.password, function (err) {
+      if (err) {
+        return console.error('Unable to bind: ' + err);
+      }
+      opts.filter = '(&(objectClass=contact)(mailNickname=*))';
+      query_ldap(client, opts, function () {
+        client.unbind();
+      });
     });
+  });
 }
 
 if (argv.users) {
-    ldap_connect(function (client) {
-        client.bind(argv.username, argv.password, function (err) {
-            opts.filter = '(&(objectClass=user)(objectCategory=person)(mailNickname=*)(msExchHomeServerName=*))'
-            query_ldap(client, opts, function () {
-                client.unbind();
-            });
-        });
+  ldap_connect(function (client) {
+    client.bind(argv.username, argv.password, function (err) {
+      if (err) {
+        return console.error('Unable to bind: ' + err);
+      }
+      opts.filter = '(&(objectClass=user)(objectCategory=person)(mailNickname=*)(msExchHomeServerName=*))';
+      query_ldap(client, opts, function () {
+        client.unbind();
+      });
     });
+  });
 }
 
 if (argv.rooms) {
-    ldap_connect(function (client) {
-        client.bind(argv.username, argv.password, function (err) {
-            opts.filter = '(&(mailNickname=*)(|(msExchRecipientDisplayType=7)(msExchRecipientDisplayType=-2147481850)))'
-            query_ldap(client, opts, function () {
-                client.unbind();
-            });
-        });
+  ldap_connect(function (client) {
+    client.bind(argv.username, argv.password, function (err) {
+      if (err) {
+        return console.error('Unable to bind: ' + err);
+      }
+      opts.filter = '(&(mailNickname=*)(|(msExchRecipientDisplayType=7)(msExchRecipientDisplayType=-2147481850)))';
+      query_ldap(client, opts, function () {
+        client.unbind();
+      });
     });
+  });
 }
 
 if (argv.mailenabledcontacts) {
-    ldap_connect(function (client) {
-        client.bind(argv.username, argv.password, function (err) {
-            opts.filter = '(&(objectClass=user)(targetAddress=*))'
-            query_ldap(client, opts, function () {
-                client.unbind();
-            });
-        });
+  ldap_connect(function (client) {
+    client.bind(argv.username, argv.password, function (err) {
+      if (err) {
+        return console.error('Unable to bind: ' + err);
+      }
+      opts.filter = '(&(objectClass=user)(targetAddress=*))';
+      query_ldap(client, opts, function () {
+        client.unbind();
+      });
     });
+  });
 }
