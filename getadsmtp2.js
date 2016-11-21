@@ -10,6 +10,7 @@ var argv = require('yargs')
     .describe('username', 'LDAP username')
     .describe('password', 'LDAP password')
     .describe('server', 'LDAP server in the format ldaps://my.server.tld')
+    .describe('search', 'Search OU (i.e. dc=mycompany,dc=local')
     .describe('groups', 'Include group addresses')
     .describe('folders', 'Include public folder addresses')
     .describe('contacts', 'Include addresses from contacts')
@@ -21,6 +22,7 @@ var argv = require('yargs')
     .describe('mailenabledcontacts', 'Include mail-enabled contacts')
     .requiresArg('haraka-rcpt-to-routes')
     .requiresArg('postfix-transport-map')
+    .requiresArg('search')
     .argv;
 
 var ldap = require('ldapjs');
@@ -34,7 +36,7 @@ function ldap_connect(callback) {
     });
     callback(client);
 };
- 
+
 var opts = {
     attributes: ['dn', 'proxyAddresses'],
     scope: 'sub'
@@ -51,7 +53,7 @@ function write_line(data) {
 }
 
 function query_ldap(client, opts, callback) {
-    client.search('DC=smiles,DC=local', opts, function (err, search) {
+    client.search(argv.search, opts, function (err, search) {
         search.on('searchEntry', function (entry) {
             var user = entry.object;
             async.each(user.proxyAddresses, function (addr, cb) {
@@ -77,7 +79,7 @@ function query_ldap(client, opts, callback) {
         });
     });
 }
- 
+
 if (argv.groups) {
     ldap_connect(function (client) {
         client.bind(argv.username, argv.password, function (err) {
@@ -121,7 +123,7 @@ if (argv.users) {
         });
     });
 }
- 
+
 if (argv.rooms) {
     ldap_connect(function (client) {
         client.bind(argv.username, argv.password, function (err) {
