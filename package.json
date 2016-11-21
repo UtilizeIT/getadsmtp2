@@ -1,6 +1,6 @@
 {
   "name": "getadsmtp2",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Gather SMTP info from Active Directory for use in e-mail routing",
   "main": "getadsmtp2.js",
   "scripts": {
