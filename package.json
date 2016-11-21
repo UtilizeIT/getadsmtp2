@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "bin": { "getadsmtp2": "./getadsmtp2.js" },
+  "bin": {
+    "getadsmtp2": "./getadsmtp2.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/UtilizeIT/getadsmtp2.git"
@@ -18,9 +20,9 @@
   },
   "homepage": "https://github.com/UtilizeIT/getadsmtp2#readme",
   "dependencies": {
-    "async": "^2.0.1",
-    "debug": "^2.2.0",
-    "ldapjs": "^1.0.0",
+    "async": "^2.1.2",
+    "debug": "^2.3.3",
+    "ldapjs": "^1.0.1",
     "yargs": "^5.0.0"
   }
 }
