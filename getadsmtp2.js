@@ -48,7 +48,7 @@ function write_line(data) {
     if (argv.harakaRcptToRoutes) {
         console.log(data.toLowerCase() + '=' + argv.harakaRcptToRoutes.toLowerCase());
     } else if (argv.postfixTransportMap) {
-        console.log(data.toLowerCase() + "\t" + argv.postfixTransportMap.toLowerCase());
+        console.log(data.toLowerCase() + '\t' + argv.postfixTransportMap.toLowerCase());
     } else {
         console.log(data);
     }
