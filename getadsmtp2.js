@@ -16,6 +16,7 @@ var argv = require('yargs')
     .describe('contacts', 'Include addresses from contacts')
     .describe('users', 'Include addresses from users with mailboxes')
     .describe('rooms', 'Include rooms')
+    .describe('filter-garbage', 'Remove "garbage" from AD (like system mailboxes)')
     .describe('ignore-local', 'Ignore addresses ending with .local')
     .describe('haraka-rcpt-to-routes', 'Output in Haraka rcpt_to.routes format, requires specifying the URI for delivery')
     .describe('postfix-transport-map', 'Output in a format suitable for a Postfix transport map, requires specifying the destination server')
@@ -63,6 +64,8 @@ function query_ldap(client, opts, callback) {
                     // Check if it ends with .local and if we are supposed to ignore .local addresses
                     if (addr.match(/\.local$/) && argv.ignoreLocal) {
                         debug('Skipping local address: ' + addr);
+                    } else if ((addr.indexOf('{') !== -1) && argv.filterGarbage) {
+                      debug('Skipping garbage address: ' + addr);
                     } else {
                         write_line(addr.substring(addr.indexOf('smtp:') + 5));
                     }
