@@ -55,33 +55,39 @@ function write_line(data) {
 }
 
 function query_ldap(client, opts, callback) {
-    client.search(argv.search, opts, function (err, search) {
-        search.on('searchEntry', function (entry) {
-            var user = entry.object;
-            async.each(user.proxyAddresses, function (addr, cb) {
-                addr = addr.toLowerCase()
-                // Check if the address starts with SMTP:
-                if (!addr.indexOf('smtp:') == 1) {
-                    // Check if it ends with .local and if we are supposed to ignore .local addresses
-                    if (addr.match(/\.local$/) && argv.ignoreLocal) {
-                        debug('Skipping local address: ' + addr);
-                    } else if ((addr.indexOf('{') !== -1) && argv.filterGarbage) {
-                      debug('Skipping garbage address: ' + addr);
-                    } else {
-                        write_line(addr.substring(addr.indexOf('smtp:') + 5));
-                    }
-                }
-                cb();
-            }, function (err) {
-                if (err) {
-                    debug(err);
-                }
-            });
-        });
-        search.on('end', function (result) {
-            callback();
-        });
+  client.search(argv.search, opts, function (err, search) {
+    if (err) {
+      return console.error('Unable to search: ' + err);
+    }
+
+    search.on('searchEntry', function (entry) {
+      var user = entry.object;
+      async.each(user.proxyAddresses, function (address, cb) {
+        var addr = address.toLowerCase();
+        // Check if the address starts with SMTP:
+        if (!addr.indexOf('smtp:') == 1) {
+          // Check if it ends with .local and if we are supposed to ignore .local addresses
+          if (addr.match(/\.local$/) && argv.ignoreLocal) {
+            debug('Skipping local address: ' + addr);
+          } else if (addr.indexOf('{') !== -1 && argv.filterGarbage) {
+            debug('Skipping garbage address: ' + addr);
+          } else if (addr.indexOf('federatedemail') !== -1 && argv.filterGarbage) {
+            debug('Skipping garbage address: ' + addr);
+          } else {
+            write_line(addr.substring(addr.indexOf('smtp:') + 5));
+          }
+        }
+      cb();
+      }, function (err) {
+        if (err) {
+          debug(err);
+        }
+      });
     });
+    search.on('end', function (result) {
+      callback();
+    });
+  });
 }
 
 if (argv.groups) {
